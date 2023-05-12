@@ -20,6 +20,7 @@
 
 import json
 import random
+import time
 import urllib.request
 
 # Server API URLs
@@ -46,18 +47,24 @@ def getRatio(price_a, price_b):
     return price_a / price_b
 
 
-# Main
 if __name__ == "__main__":
-    # Query the price once every N seconds.
-    for _ in iter(range(N)):
+    """Run the main program"""
 
+
+    prices = {} # Create an empty dictionary to store stock prices
+    # for _ in range(5):
+    for _ in iter(range(N)):
         quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
 
-        """ ----------- Update to get the ratio --------------- """
-        prices = {}
         for quote in quotes:
             stock, bid_price, ask_price, price = getDataPoint(quote)
-            prices[stock] = price
-            print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
+            prices[stock] = price  # Store the stock price in the prices dictionary
 
-        print("Ratio %s" % getRatio(prices["ABC"], prices["DEF"]))
+        if 'ABC' in prices and 'DEF' in prices:
+            ratio = getRatio(prices['ABC'], prices['DEF'])  # Calculate the ratio using the stored prices
+            print("Ratio:", ratio)
+
+        time.sleep(1)
+
+
+
